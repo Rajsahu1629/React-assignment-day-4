@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template</title>
+  </head>
+  <body>
+    <div id="root">
+        
+    </div>
+  </body>
+  <script src="https://www.unpkg.com/react@18.2.0/umd/react.development.js"></script>
+  <script src="https://www.unpkg.com/react-dom@18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/babel">
+
+const Url = ("https://assignment-4-efdea-default-rtdb.firebaseio.com/userss.json")
+
+const Components  = () => {
+
+
+  const handlesubmit = ((e)=>{
+    e.preventDefault();
+    let title = e.target[0].value;
+    let iscompleted = e.target[1].value;
+    let obj = {title,iscompleted};
+
+    axios.post(Url,obj);  // data is send to firebase 
+    
+  })
+ 
+
+    return (    
+        <div>
+            <form onSubmit={handlesubmit}>
+                
+                <h1>Title: <input></input></h1>
+                <h1>IsCompeted</h1><select>
+                    <option>True</option>
+                    <option>False</option>
+                    </select>
+                <input type = "submit"></input>
+            </form>
+        </div>
+
+    )
+}
+
+const Showdata = () => {
+    const [data,setdata] = React.useState({});
+    axios.get(Url).then((res)=>{
+        setdata(res.data)
+        
+    })
+    return (
+        <div>
+            {
+                Object.entries(data).map((ele)=>{
+                    return (
+                        <div>
+                            <h1>{ele[1].title}</h1>
+                            <h1>{ele[1].iscompleted}</h1>
+                        </div>
+                    )
+                })
+            }
+        </div>
+
+    )
+}
+const App = () => {
+    return (
+        <div>
+            <Components/>
+            <Showdata/>
+
+        </div>
+    )
+}
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App/>)
+  </script>
+</html>
